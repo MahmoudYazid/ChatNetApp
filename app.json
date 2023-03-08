@@ -1,0 +1,14 @@
+{
+    "expo": {
+        "name": "core",
+        "slug": "core",
+        "version": "1.0.0",
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "jsEngine": "hermes",
+        "ios": {
+            "jsEngine": "jsc"
+        }
+    }
+}
