@@ -1,108 +1,114 @@
-import React,{setState,useState} from "react";
+import React,{useState} from "react";
 import {
   View,
   TextInput,
   Text,
   StyleSheet,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  Keyboard,ScrollView,Alert,SafeAreaView
+  ScrollView,Alert,SafeAreaView
 } from "react-native";
-
+import { connectionlink } from "./variable";
 export default function ConversatioForm({ route, navigation }) {
-    const {data_} = route.params;
+    const [data_, setData] = useState([])
     const { useroneName_ } = route.params;
     const { userOneid_ } = route.params;
     const { UserTwoName_ } = route.params;
     const { userTwoid_ } = route.params;
     const {userNameparam}=route.params;
     const [targetedmsg,settargetedmsg]=useState("");
+    const getdata=()=>{
+       fetch(
+          `${connectionlink}/priverchat?sid=${userOneid_}&rid=${userTwoid_}`,
+          {method: 'GET'},
+       ).then(res => {
+          res.json().then(JsonData => {
+             setData(JsonData)
+           
+          })
+       })
+    }
+    getdata()
+    
   
   return (
-    <View>
-      <SafeAreaView style={SearchBarStyleSheet.Container} Ref>
-        <TextInput
-          placeholder="Type..."
-          placeholderTextColor={"black"}
-          style={SearchBarStyleSheet.SearchTextinput}
-          onChangeText={(text___) => {
-            settargetedmsg(text___);
-          }}
-        ></TextInput>
-        <TouchableOpacity
-          style={SearchBarStyleSheet.Searchbtminput}
-          onPress={() => {
-            fetch(
-              `https://chatnet-d7vv.onrender.com/sendmsg?sid=${
-                useroneName_ == userNameparam ? userOneid_ : userTwoid_
-              }&rid=${
-                useroneName_ == userNameparam ? userTwoid_ : userOneid_
-              }&msg=${targetedmsg}`,
-              { method: "POST" }
-            ).then((json) => {
-              Alert.alert("msgSent");
-            });
-          }}
-        >
-          <Text style={SearchBarStyleSheet.Searchbtminputtext}>send</Text>
-        </TouchableOpacity>
-      </SafeAreaView>
-      <ScrollView>
-        {data_.map((getdata) => (
-          <ScrollView key={Math.random()} style={msgstyle.msgContainer}>
-            <Text
-              key={Math.random()}
-              style={{ color: "green", left: 60 }}
-              onLongPress={() => {
-                Alert.alert("Alert", "Would You Like to Delete Msg", [
-                  {
-                    text: "delete",
-                    onPress: () => {
-                      fetch(
-                        `https://chatnet-d7vv.onrender.com/del/${getdata._id}`,
-                        { method: "DELETE" }
-                      ).then(() => {
-                        Alert.alert("Msg Deleted");
-                      });
-                    },
-                  },
-                  {
-                    text: "Close",
-                  },
-                ]);
-              }}
-            >
-              {userOneid_ == getdata.senderid ? useroneName_ : UserTwoName_}
-            </Text>
-            <Text
-              key={Math.random()}
-              style={{ marginLeft: 10 }}
-              onLongPress={() => {
-                Alert.alert("Alert", "Would You Like to Delete Msg", [
-                  {
-                    text: "delete",
-                    onPress: () => {
-                      fetch(
-                        `https://chatnet-d7vv.onrender.com/del/${getdata._id}`,
-                        { method: "DELETE" }
-                      ).then(() => {
-                        Alert.alert("Msg Deleted");
-                      });
-                    },
-                  },
-                  {
-                    text: "Close",
-                  },
-                ]);
-              }}
-            >
-              {getdata.msg}
-            </Text>
-          </ScrollView>
-        ))}
-      </ScrollView>
-    </View>
-  );
+     <View>
+        <View style={SearchBarStyleSheet.Container}>
+           <TextInput
+              style={SearchBarStyleSheet.SearchTextinput}
+              onChangeText={e => {
+                 settargetedmsg(e)
+              }}></TextInput>
+           <TouchableOpacity
+              style={SearchBarStyleSheet.Searchbtminput}
+              onPress={() => {
+                 fetch(
+                    `https://chatnet-d7vv.onrender.com/sendmsg?sid=${
+                       useroneName_ == userNameparam ? userOneid_ : userTwoid_
+                    }&rid=${
+                       useroneName_ == userNameparam ? userTwoid_ : userOneid_
+                    }&msg=${targetedmsg}`,
+                    {method: 'POST'},
+                 ).then(json => {
+                    Alert.alert('msgSent')
+                 })
+              }}>
+              <Text style={SearchBarStyleSheet.Searchbtminputtext}>send</Text>
+           </TouchableOpacity>
+        </View>
+        <ScrollView>
+           {data_.map(getdata => (
+              <ScrollView key={Math.random()} style={msgstyle.msgContainer}>
+                 <Text
+                    key={Math.random()}
+                    style={{color: 'green', left: 60}}
+                    onLongPress={() => {
+                       Alert.alert('Alert', 'Would You Like to Delete Msg', [
+                          {
+                             text: 'delete',
+                             onPress: () => {
+                                fetch(`${connectionlink}/del/${getdata._id}`, {
+                                   method: 'DELETE',
+                                }).then(() => {
+                                   Alert.alert('Msg Deleted')
+                                })
+                             },
+                          },
+                          {
+                             text: 'Close',
+                          },
+                       ])
+                    }}>
+                    {userOneid_ == getdata.senderid
+                       ? useroneName_
+                       : UserTwoName_}
+                 </Text>
+                 <Text
+                    key={Math.random()}
+                    style={{marginLeft: 10}}
+                    onLongPress={() => {
+                       Alert.alert('Alert', 'Would You Like to Delete Msg', [
+                          {
+                             text: 'delete',
+                             onPress: () => {
+                                fetch(`${connectionlink}/del/${getdata._id}`, {
+                                   method: 'DELETE',
+                                }).then(() => {
+                                   Alert.alert('Msg Deleted')
+                                })
+                             },
+                          },
+                          {
+                             text: 'Close',
+                          },
+                       ])
+                    }}>
+                    {getdata.msg}
+                 </Text>
+              </ScrollView>
+           ))}
+        </ScrollView>
+     </View>
+  )
 }
 const msgstyle = StyleSheet.create({
   msgContainer: {
@@ -140,11 +146,12 @@ const SearchBarStyleSheet = StyleSheet.create({
     paddingRight: 20,
   },
   Container: {
-    alignItems: "center",
-    paddingTop: 10,
+    
     flexDirection: "row",
-    justifyContent: "space-evenly",
-    position:'fix'
+    height:50,
+    width:"100%",
+    
+
   },
   Searchbtminput: {
     backgroundColor: "#4e82fb",

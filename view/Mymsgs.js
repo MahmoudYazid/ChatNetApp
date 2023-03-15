@@ -10,7 +10,7 @@ import {
   Alert,Image, ScrollView
 } from "react-native";
 
-
+import {connectionlink} from './variable'
 export default function MsgPageForm({ route, navigation }) {
   const [textinput__,settextinput] = useState("");
   
@@ -36,13 +36,10 @@ export default function MsgPageForm({ route, navigation }) {
             style={SearchBarStyleSheet.Searchbtminput}
             onPress={() => {
                fetch(
-                 `https://chatnet-d7vv.onrender.com/sendcsv?sender=${username_}&reciever=${textinput__}`,
+                 `${connectionlink}/sendcsv?sender=${username_}&reciever=${textinput__}`,
                  { method: "POST" }
                ).then((data=>{
-                data.json((response)=>{
-                  re
-                })
-                
+                console.log("complete")
                }));
               
              
@@ -60,19 +57,25 @@ export default function MsgPageForm({ route, navigation }) {
               key={Math.random()}
               onPress={() => {
                 fetch(
-                  `https://chatnet-d7vv.onrender.com/priverchat?sid=${data.userOneid}&rid=${data.usertwoid}`,
+                  `${connectionlink}/priverchat?sid=${data.userOneid}&rid=${data.usertwoid}`,
                   { method: "GET" }
                 ).then((res) => {
-                  res.json().then((JsonData) => {
-                    navigation.navigate("conversation", {
-                      data_: JsonData,
-                      useroneName_: data.UserOneName,
-                      userOneid_: data.userOneid,
-                      UserTwoName_: data.UserTwoName,
-                      userTwoid_: data.usertwoid,
-                      userNameparam: username_,
-                    });
-                  });
+                  res.json()
+                     .then(JsonData => {
+                   
+                     
+                        navigation.navigate('conversation', {
+                        
+                           useroneName_: data.UserOneName,
+                           userOneid_: data.userOneid,
+                           UserTwoName_: data.UserTwoName,
+                           userTwoid_: data.usertwoid,
+                           userNameparam: username_
+                        })
+                     })
+                     .catch((err) => {
+                   
+                     });
                 });
               }}
             >

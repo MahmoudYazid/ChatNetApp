@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,Keyboard,Alert
 } from "react-native";
-
+import {connectionlink} from './variable'
 
 export const SignupForm =({navigation})=>{
   const [name_, setName] = useState("");
@@ -55,20 +55,20 @@ export const SignupForm =({navigation})=>{
               <TouchableOpacity style={signupbtmStyle.signupBtm}
               onPress={()=>{
                 fetch(
-                  `https://chatnet-d7vv.onrender.com/signup?name=${name_}&pass=${password_}&tel=${Number(
-                    phone_
-                  )}`,
-                  { method: "POST" }
+                   `${connectionlink}/signup?name=${name_}&pass=${password_}&tel=${Number(
+                      phone_,
+                   )}`,
+                   {method: 'POST'},
                 )
-                  .then(() => {
-                    Alert.alert("Completed");
-                  })
-                  .then(() => {
-                    navigation.navigate("login");
-                  })
-                  .catch(() => {
-                    Alert.alert("NotCompleted");
-                  });
+                   .then(() => {
+                      Alert.alert('Completed')
+                   })
+                   .then(() => {
+                      navigation.navigate('login')
+                   })
+                   .catch(() => {
+                      Alert.alert('NotCompleted')
+                   })
                   
                 
                 

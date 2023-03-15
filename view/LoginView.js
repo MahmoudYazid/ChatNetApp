@@ -1,11 +1,12 @@
 import React,{useState} from "react";
 import { View,TextInput ,Text,StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Alert} from "react-native";
 import fetch from "node-fetch";
+import { connectionlink } from "./variable";
 
 
 const ReturnMyid=(MyUserName)=>{
   fetch(`
-https://chatnet-d7vv.onrender.com/finduser?name=${MyUserName} `).then((res)=>{
+${connectionlink}/finduser?name=${MyUserName} `).then((res)=>{
   res.json().then((data)=>{
     data.map((fetchdata)=>{
       return fetchdata._id
@@ -24,7 +25,7 @@ export const LoginForm = ({ navigation }) => {
   const getId = async () => {
   
     fetch(
-      `https://chatnet-d7vv.onrender.com/login?identify=${name_}&psw=${password_}`,
+      `${connectionlink}/login?identify=${name_}&psw=${password_}`,
       {
         method: "GET",
       }
